@@ -24,10 +24,21 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.sergio_leal.storage"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Storage to access your photos.",
+          "savePhotosPermission": "Allow Storage to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ]
   }
 }
