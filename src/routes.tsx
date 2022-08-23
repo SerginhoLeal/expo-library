@@ -7,7 +7,6 @@ import { useContext } from '@context';
 
 import HomeScreen from './pages/home';
 import PerfilScreen from './pages/perfil';
-import ProductScreen from './pages/folder';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,14 +51,6 @@ export default function Router() {
               <Icon name='plus' size='50' />
             </Native.TouchableOpacity>
           )
-        }}
-      />
-      <Tab.Screen
-        name="Product"
-        component={ProductScreen}
-        options={{
-          tabBarStyle:{ display: 'none' },
-          tabBarButton: () => null
         }}
       />
     </Tab.Navigator>
