@@ -1,18 +1,26 @@
 import styled, { css } from 'styled-components/native';
-import Modal from 'react-native-modal';
+import * as Native from 'react-native';
 
-export const Container = styled.TouchableOpacity`
+const {width: WIDTH_FOR_IMAGE, height: HEIGHT_FOR_IMAGE} = Native.Dimensions.get('window');
+
+export const Container = styled.SafeAreaView`
   position: relative;
   flex: 1;
+  /* justify-content: center;
+  align-items: center; */
 `;
 
 export const Actions = styled.View`
+  ${({ display, width, height }: any) => css`
+    display: ${display ? 'flex' : 'none'};
+    width: ${width}px;
+    height: ${height}px;
+  `};
+
   flex-direction: row;
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  /* bottom: 0; */
   align-items: center;
   justify-content: center;
-  background-color: #000000aa;
+  background-color: #303030aa;
 `;

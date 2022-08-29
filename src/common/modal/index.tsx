@@ -1,51 +1,91 @@
 import * as React from 'react';
-import * as ExpoAv from 'expo-av';
 import * as Styles from './styles';
 import * as Native from 'react-native';
-import * as FileSystem from 'expo-file-system';
-import * as MediaLibrary from 'expo-media-library';
 
-import { Icon } from '../svg';
+import { useContext } from '@context';
 
-export const ModalScreen: React.FC<any> = ({
-  state,
-  progress,
-  handleDownload,
-}: any) => {
-  const video = React.useRef<any>(null);
-  const [status, setStatus] = React.useState<any>({});
-  // console.log(status.isPlaying);
-  
-  const [open, setOpen] = React.useState(false);
+import { OnViewableItemsChangedProps } from './types';
 
-  const handlePlayPause = () => setStatus(status?.isPlaying ? video.current?.pauseAsync() : video.current?.playAsync());
-  
-  const downloaded = state.downloaded ? 'check' : progress === 0 ? 'download' : progress === 1 ? 'check': 'arrow-rotate';
+import Video from '../video';
+
+const { width: WIDTH_FOR_IMAGE } = Native.Dimensions.get('window');
+
+export const ModalScreen: React.FC<any> = ({ state }: any) => {
+  const { media } = useContext();
+
+  const mediaRefs = React.useRef<any[]>([]);
+  const listRef = React.useRef<Native.FlatList>(null);
+  const scrollX = React.useRef(new Native.Animated.Value(0)).current;
+
+  const onViewableItemsChanged = React.useRef(({ changed }: OnViewableItemsChangedProps) => {
+    changed.forEach(({ key, isViewable }) => {
+      const cell = mediaRefs.current[Number(key)];
+      if(cell){
+        // console.log(
+        //   element.isViewable
+        //   ? `id-${element.item.id} | ${element.isViewable} | ${element.key}`
+        //   : `id-${element.item.id} removed`
+        // );
+
+        if(isViewable){
+          cell.play();
+        }else{
+          cell.stop();
+        };
+      };
+    });
+  });
+
+  React.useEffect(() => {
+    return listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * state.status })
+  }, []);
 
   return (
-    <Styles.Container activeOpacity={1} onPress={() => setOpen(!open)}>
-      <ExpoAv.Video
-        ref={video}
-        shouldPlay={true}
-        isLooping
-        useNativeControls={false}
-        style={{ flex: 1 }}
-        resizeMode="contain"
-        source={{ uri: state.url }}
-        onPlaybackStatusUpdate={status => setStatus(() => status)}
+    <Styles.Container>
+      <Native.View style={Native.StyleSheet.absoluteFillObject}>
+        {media.data.map((image, index) => {
+          const inputRange = [(index - 1) * WIDTH_FOR_IMAGE, index * WIDTH_FOR_IMAGE, (index + 1) * WIDTH_FOR_IMAGE];
+          const opacity = scrollX.interpolate({ inputRange, outputRange: [0,1,0] });
+          return (
+            <Native.Animated.Image
+              blurRadius={5}
+              key={`image-${index}`}
+              source={{ uri: image.preview }}
+              style={[ Native.StyleSheet.absoluteFillObject, { opacity: opacity } ]}
+            />
+          )
+        })}
+      </Native.View>
+      <Native.Animated.FlatList
+        data={media.data}
+        ref={listRef}
+
+        horizontal
+        pagingEnabled
+        windowSize={4}
+        removeClippedSubviews
+        initialNumToRender={0}
+        maxToRenderPerBatch={2}
+        decelerationRate='normal'
+        keyExtractor={(_, i) => i.toString()}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
+        onViewableItemsChanged={onViewableItemsChanged.current}
+        // onContentSizeChange={() => listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * status })}
+        onScrollToIndexFailed={() => {}}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({item, index}) => {
+          return (
+            <Video
+              posts={item}
+              ref={PostSingleRef => (mediaRefs.current[index] = PostSingleRef) }
+            />
+          )
+        }}
+        onScroll={Native.Animated.event(
+          [{ nativeEvent:{ contentOffset: { x: scrollX } } }],
+          { useNativeDriver: true }
+        )}
       />
-      {open && (
-        <Styles.Actions>
-          <Native.TouchableOpacity onPress={() => handleDownload(state.id)} style={{ padding: 25 }}>
-            <Icon name={downloaded} />
-          </Native.TouchableOpacity>
-          <Native.TouchableOpacity onPress={handlePlayPause} style={{ padding: 25 }}>
-            <Icon name={status.isPlaying ? 'pause' : 'play'} />
-          </Native.TouchableOpacity>
-        </Styles.Actions>
-      )}
     </Styles.Container>
   )
 };
-
-/*<Native.Image style={{ flex: 1 }} resizeMode='contain' source={{ uri: state.url }} />*/
