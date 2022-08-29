@@ -8,7 +8,6 @@ import Modal from 'react-native-modal';
 import { Icon, Masonry, ModalScreen } from '@common';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { useContext } from '@context';
 
 type Props = {
   quantity: number;
@@ -17,7 +16,6 @@ type Props = {
 };
 
 const Folder: React.FC = () => {
-  const { setMedia } = useContext();
   const [folder, setFolder] = React.useState<Props>({
     quantity: 0,
     data: [],
