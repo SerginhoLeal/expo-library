@@ -14,7 +14,7 @@ const Home: React.FC = () => {
   const { media } = useContext();
   
   const [progress, setProgress] = React.useState<number>(0);
-  const [state, setState] = React.useState({ id: 0, downloaded: false, url:'', creator:'', modal:false, type:'' });
+  const [state, setState] = React.useState({ id: 0, downloaded: false, url:'', creator:'', modal:false, type:'', index: 0 });
 
   const handleSelectItem = (item: any) => {
     setState({
@@ -24,8 +24,10 @@ const Home: React.FC = () => {
       creator: `${item.id}_${item.createby}`,
       url: item.url,
       type: item.type,
-      downloaded: item.downloaded
+      downloaded: item.downloaded,
+      index: item.index,
     });
+    setProgress(0)
   };
 
   const callback = (downloadProgress: FileSystem.DownloadProgressData) => {
@@ -33,20 +35,15 @@ const Home: React.FC = () => {
     setProgress(progress);
   };
 
-  const downloadResumable: FileSystem.DownloadResumable = FileSystem.createDownloadResumable(
-    state.url,
-    `${FileSystem.documentDirectory}${state.creator}${state.type === 'video' ? '.mp4' : '.png'}`,
-    {},
-    callback
-  );
-
-  const handleDownload = async (id: number) => {
-    const { granted } = await MediaLibrary.requestPermissionsAsync();
-    if(granted) await MediaLibrary.getAlbumsAsync();
+  const handleDownload = async (url: string) => {
+    const downloadResumable: FileSystem.DownloadResumable = FileSystem.createDownloadResumable(
+      url,
+      `${FileSystem.documentDirectory}${state.creator}${state.type === 'video' ? '.mp4' : '.png'}`,
+      {},
+      callback
+    );
 
     const album = await MediaLibrary.getAlbumAsync('Storage');
-    // const { assets } = await MediaLibrary.getAssetsAsync({ album });
-    // const verifyItem = assets.find(item => item.filename === status.fileNameExist);
 
     const { uri, status }: any = await downloadResumable.downloadAsync();
     const asset = await MediaLibrary.createAssetAsync(uri);
