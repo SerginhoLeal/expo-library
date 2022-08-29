@@ -21,7 +21,6 @@ export const Masonry: React.FC<Props> = ({
   handleSelectItem
 }: Props) => {
 
-  
   if(data[0].length === 0) {
     return <></>
   }
@@ -30,18 +29,18 @@ export const Masonry: React.FC<Props> = ({
     <Native.FlatList
       data={data}
       keyExtractor={(_, index) => index.toString()}
-      renderItem={({ item }) => (
+      renderItem={({ item, index }) => (
         <Styles.Content>
           <Native.View style={{ width: width }}>
-            {item.response.filter((_: any, i: number) => Number.isInteger(i / 2)).map((item: any, index: any) => (
-              <Native.TouchableOpacity activeOpacity={1} key={index} onPress={() => handleSelectItem(item)}>
+            {item.data.filter((_: any, i: number) => Number.isInteger(i / 2)).map((item: any, ind: any) => (
+              <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
                 <Image item={item} />
               </Native.TouchableOpacity>
             ))}
           </Native.View>
           <Native.View style={{ width: width }}>
-            {item.response.filter((_: any, i: number) => !Number.isInteger(i / 2)).map((item: any, index: any) => (
-              <Native.TouchableOpacity activeOpacity={1} key={index} onPress={() => handleSelectItem(item)}>
+            {item.data.filter((_: any, i: number) => !Number.isInteger(i / 2)).map((item: any, ind: any) => (
+              <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
                 <Image item={item} />
               </Native.TouchableOpacity>
             ))}

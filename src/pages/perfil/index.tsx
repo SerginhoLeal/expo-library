@@ -3,22 +3,41 @@ import * as Native from 'react-native';
 import * as Styles from './styles';
 import * as MediaLibrary from 'expo-media-library';
 
-import { Icon, Masonry } from '@common';
+import Modal from 'react-native-modal';
+
+import { Icon, Masonry, ModalScreen } from '@common';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { useContext } from '@context';
 
 type Props = {
   quantity: number;
-  response: any[];
+  data: any[];
   status: string | null;
 };
 
 const Folder: React.FC = () => {
+  const { setMedia } = useContext();
   const [folder, setFolder] = React.useState<Props>({
     quantity: 0,
-    response: [],
+    data: [],
     status: null,
   });
+
+  const [state, setState] = React.useState({ id: 0, downloaded: false, url:'', creator:'', modal:false, type:'', index: 0 });
+
+  const handleSelectItem = (item: any) => {
+    setState({
+      ...state,
+      id: item.id,
+      modal: true,
+      creator: `${item.id}_${item.createby}`,
+      url: item.uri,
+      type: item.type,
+      downloaded: item.downloaded,
+      index: item.index
+    });
+  };
 
   const refreshAssets = async (numAssets = 50) => {
     const { granted } = await MediaLibrary.requestPermissionsAsync();
@@ -35,11 +54,13 @@ const Folder: React.FC = () => {
       first: numAssets,
       album,
     })
-      .then(response => setFolder({
-        ...folder,
-        quantity: response.assets.length,
-        response: response.assets,
-      }))
+      .then(data => {
+        setFolder({
+          ...folder,
+          quantity: data.assets.length,
+          data: data.assets,
+        })
+      })
   };
 
   useFocusEffect(React.useCallback(() => {refreshAssets()}, []));
@@ -52,8 +73,16 @@ const Folder: React.FC = () => {
           <Native.Text>Faça um download</Native.Text>
         </Native.View>
       ) : (
-        <Masonry data={[folder]} handleSelectItem={() => {}} />
+        <Masonry data={[folder]} handleSelectItem={handleSelectItem} />
       )}
+      <Modal
+        style={{ margin: 0, backgroundColor: '#FFF' }}
+        statusBarTranslucent
+        animationIn="fadeIn"
+        isVisible={state.modal}
+        onBackButtonPress={() => setState({ ...state, modal: false })}>
+          <ModalScreen state={state} />
+      </Modal>
     </Styles.Container>
   );
 };

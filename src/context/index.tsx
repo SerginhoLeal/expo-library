@@ -4,9 +4,14 @@ import * as MediaLibrary from 'expo-media-library';
 import { Images } from '@mocks';
 
 type ContextProvider = { children: React.ReactNode };
-
-type ContextProps = {
-  media: any[];
+/**
+ * Teste de interface, quando você passar o mouse em cima da propriedade, esse texto aparece
+ */
+interface ContextProps {
+  media: {
+    data: any[]
+  };
+  setMedia: (media: any) => void;
   loading: boolean;
 };
 
@@ -14,15 +19,24 @@ const Context = React.createContext<ContextProps>({} as ContextProps);
 
 export const ContextProvider: React.FC<ContextProvider> = ({children}) => {
 
-  const [media, setMedia] = React.useState<any>([]);
+  const [media, setMedia] = React.useState<{ data: Array<object> }>({
+    data: []
+  });
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const checkingDownloadedItems = async() => {
-    setLoading(true)
+    const { granted } = await MediaLibrary.requestPermissionsAsync();
+    if(granted) await MediaLibrary.getAlbumsAsync();
+
+    setLoading(true);
     const album = await MediaLibrary.getAlbumAsync('Storage');
 
     if(album === null){
-      return console.log('album === null');
+      return ({
+        status: 404,
+        message: "Arquivo não encontrado",
+        data: Images.map((images, index) => ({ ...images, downloaded: false, index }))
+      })
     };
 
     const { assets } = await MediaLibrary.getAssetsAsync({
@@ -30,14 +44,18 @@ export const ContextProvider: React.FC<ContextProvider> = ({children}) => {
       album,
     });
 
-    const mappingAssets = assets.map(response => response.filename.slice(0, 1));
+    const mappingAssets = assets.map(data => data.filename.slice(0, 1));
 
-    const response: any[] = Images.map(images => ({
+    const data: any[] = Images.map((images, index) => ({
       ...images,
-      downloaded: mappingAssets.includes(`${images.id}`)
+      downloaded: mappingAssets.includes(`${images.id}`),
+      index
     }));
 
-    return ({ response });
+    return ({
+      status: 200,
+      data
+    });
   };
 
   React.useEffect(() => {
@@ -48,6 +66,7 @@ export const ContextProvider: React.FC<ContextProvider> = ({children}) => {
 
   const contexts = {
     media,
+    setMedia,
     loading,
   };
 
