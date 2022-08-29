@@ -3,7 +3,6 @@ import * as Native from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Icon } from '@common';
-import { useContext } from '@context';
 
 import HomeScreen from './pages/home';
 import PerfilScreen from './pages/perfil';
@@ -11,7 +10,6 @@ import PerfilScreen from './pages/perfil';
 const Tab = createBottomTabNavigator();
 
 export default function Router() {
-  const { } = useContext();
   return (
     <Tab.Navigator>
       <Tab.Screen
