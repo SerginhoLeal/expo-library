@@ -18,15 +18,9 @@ export const ModalScreen: React.FC<any> = ({ state }: any) => {
   const scrollX = React.useRef(new Native.Animated.Value(0)).current;
 
   const onViewableItemsChanged = React.useRef(({ changed }: OnViewableItemsChangedProps) => {
-    changed.forEach(({ key, isViewable }) => {
+    changed.forEach(({ key, isViewable, item, index, section }) => {
       const cell = mediaRefs.current[Number(key)];
       if(cell){
-        // console.log(
-        //   element.isViewable
-        //   ? `id-${element.item.id} | ${element.isViewable} | ${element.key}`
-        //   : `id-${element.item.id} removed`
-        // );
-
         if(isViewable){
           cell.play();
         }else{
@@ -36,8 +30,12 @@ export const ModalScreen: React.FC<any> = ({ state }: any) => {
     });
   });
 
+  const getItemLayout = React.useCallback((_: any, index: number) => {
+    return { length: WIDTH_FOR_IMAGE, offset: WIDTH_FOR_IMAGE * index, index };
+  },[]);
+
   React.useEffect(() => {
-    return listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * state.status })
+    listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * state.status })
   }, []);
 
   return (
@@ -68,11 +66,12 @@ export const ModalScreen: React.FC<any> = ({ state }: any) => {
         maxToRenderPerBatch={2}
         decelerationRate='normal'
         keyExtractor={(_, i) => i.toString()}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
-        onViewableItemsChanged={onViewableItemsChanged.current}
-        // onContentSizeChange={() => listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * status })}
-        onScrollToIndexFailed={() => {}}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         showsHorizontalScrollIndicator={false}
+        initialScrollIndex={state.index}
+        scrollEventThrottle={16}
+        getItemLayout={getItemLayout}
+        onViewableItemsChanged={onViewableItemsChanged.current}
         renderItem={({item, index}) => {
           return (
             <Video
