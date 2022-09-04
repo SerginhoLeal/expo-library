@@ -2,8 +2,12 @@ import * as React from 'react';
 import * as Native from 'react-native';
 import * as Styles from './styles';
 
+import { Icon } from '../svg';
+import { Empty } from '../empty';
+
 type Props = {
-  data: any[];
+  data: Array<object>;
+  screen: 'data' | 'local';
   handleSelectItem: ({}: any) => void;
 };
 
@@ -16,30 +20,26 @@ const Image = ({ item }: any) => {
   return <Styles.Image source={{ uri: (item.preview || item.uri)}} width={width} height={height} />
 };
 
-export const Masonry: React.FC<Props> = ({
-  data,
-  handleSelectItem
-}: Props) => {
-
-  if(data[0].length === 0) {
-    return <></>
-  }
+export const Masonry: React.FC<Props> = ({ screen, data, handleSelectItem }: Props) => {
+  if(data.length === 0) {
+    return <Empty />
+  };
 
   return (
     <Native.FlatList
-      data={data}
+      data={[data]}
       keyExtractor={(_, index) => index.toString()}
       renderItem={({ item, index }) => (
         <Styles.Content>
           <Native.View style={{ width: width }}>
-            {item.data.filter((_: any, i: number) => Number.isInteger(i / 2)).map((item: any, ind: any) => (
+            {item.filter((_: any, i: number) => Number.isInteger(i / 2)).map((item: any, ind: any) => (
               <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
                 <Image item={item} />
               </Native.TouchableOpacity>
             ))}
           </Native.View>
           <Native.View style={{ width: width }}>
-            {item.data.filter((_: any, i: number) => !Number.isInteger(i / 2)).map((item: any, ind: any) => (
+            {item.filter((_: any, i: number) => !Number.isInteger(i / 2)).map((item: any, ind: any) => (
               <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
                 <Image item={item} />
               </Native.TouchableOpacity>
