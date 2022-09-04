@@ -10,8 +10,8 @@ module.exports = function(api) {
           root:['./src'],
           extensions: ['.tsx', '.ts', '.js', '.json'],
           alias: {
+            '@hooks': './src/hooks',
             '@pages': './src/pages',
-            '@mocks': './src/mocks',
             '@common': './src/common',
             '@context': './src/context',
           }

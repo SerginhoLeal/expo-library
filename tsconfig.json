@@ -5,7 +5,7 @@
     "baseUrl": "./",
     "paths": {
       "@src/*": ["./src/*"],
-      "@mocks": ["./src/mocks"],
+      "@hooks": ["./src/hooks"],
       "@common": ["./src/common"],
       "@pages/*": ["./src/pages/*"],
       "@context": ["./src/context"],
