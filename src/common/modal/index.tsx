@@ -2,17 +2,13 @@ import * as React from 'react';
 import * as Styles from './styles';
 import * as Native from 'react-native';
 
-import { useContext } from '@context';
-
-import { OnViewableItemsChangedProps } from './types';
-
 import Video from '../video';
+
+import { OnViewableItemsChangedProps, StateProps } from './types';
 
 const { width: WIDTH_FOR_IMAGE } = Native.Dimensions.get('window');
 
-export const ModalScreen: React.FC<any> = ({ state }: any) => {
-  const { media } = useContext();
-
+export const ModalScreen: React.FC<StateProps> = ({ data, state, onBackButtonPress }: StateProps) => {
   const mediaRefs = React.useRef<any[]>([]);
   const listRef = React.useRef<Native.FlatList>(null);
   const scrollX = React.useRef(new Native.Animated.Value(0)).current;
@@ -35,29 +31,33 @@ export const ModalScreen: React.FC<any> = ({ state }: any) => {
   },[]);
 
   React.useEffect(() => {
-    listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * state.status })
+    listRef.current?.scrollToOffset({ offset: WIDTH_FOR_IMAGE * state.index })
   }, []);
 
   return (
-    <Styles.Container>
+    <Styles.Container
+      statusBarTranslucent
+      animationIn="fadeIn"
+      isVisible={state.modal}
+      onBackButtonPress={onBackButtonPress}
+    >
       <Native.View style={Native.StyleSheet.absoluteFillObject}>
-        {media.data.map((image, index) => {
+        {data.map((image, index) => {
           const inputRange = [(index - 1) * WIDTH_FOR_IMAGE, index * WIDTH_FOR_IMAGE, (index + 1) * WIDTH_FOR_IMAGE];
           const opacity = scrollX.interpolate({ inputRange, outputRange: [0,1,0] });
           return (
             <Native.Animated.Image
               blurRadius={5}
               key={`image-${index}`}
-              source={{ uri: image.preview }}
+              source={{ uri: image?.preview }}
               style={[ Native.StyleSheet.absoluteFillObject, { opacity: opacity } ]}
             />
           )
         })}
       </Native.View>
       <Native.Animated.FlatList
-        data={media.data}
+        data={data}
         ref={listRef}
-
         horizontal
         pagingEnabled
         windowSize={4}
@@ -65,26 +65,19 @@ export const ModalScreen: React.FC<any> = ({ state }: any) => {
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         decelerationRate='normal'
-        keyExtractor={(_, i) => i.toString()}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-        showsHorizontalScrollIndicator={false}
-        initialScrollIndex={state.index}
         scrollEventThrottle={16}
         getItemLayout={getItemLayout}
+        initialScrollIndex={state.index}
+        keyExtractor={(_, i) => i.toString()}
+        showsHorizontalScrollIndicator={false}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         onViewableItemsChanged={onViewableItemsChanged.current}
-        renderItem={({item, index}) => {
-          return (
-            <Video
-              posts={item}
-              ref={PostSingleRef => (mediaRefs.current[index] = PostSingleRef) }
-            />
-          )
-        }}
+        renderItem={({item, index}) => <Video posts={item} ref={PostSingleRef => (mediaRefs.current[index] = PostSingleRef)} />}
         onScroll={Native.Animated.event(
           [{ nativeEvent:{ contentOffset: { x: scrollX } } }],
           { useNativeDriver: true }
         )}
       />
     </Styles.Container>
-  )
+  );
 };
