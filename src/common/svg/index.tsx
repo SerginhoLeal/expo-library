@@ -3,7 +3,7 @@ import * as Native from 'react-native';
 import * as Styles from './styles';
 import { Props } from './types';
 
-export const Icon: React.FC<Props> = ({ name = 'user', size = '60', color = '#fff' }: Props) => {
+export const Icon: React.FC<Props> = ({ name = 'user', size = '50', color = '#fff' }: Props) => {
   switch (name) {
     case 'home':
       return (
@@ -52,10 +52,10 @@ export const Icon: React.FC<Props> = ({ name = 'user', size = '60', color = '#ff
         </Styles.StyledSvg>
       );
 
-      case 'play':
+    case 'play':
       return (
         <Styles.StyledSvg width={size} height={size} viewBox="0 0 50 50">
-          <Styles.StyledPath d="M33.8451 24.9128L18.149 16.0838C18.0824 16.0463 18 16.0945 18 16.171V33.829C18 33.9055 18.0824 33.9537 18.149 33.9162L33.8451 25.0872C33.913 25.0489 33.913 24.9511 33.8451 24.9128Z" fill={color}/>
+          <Styles.StyledPath d="M32.4505 24.1284L19.4903 16.8383C18.8237 16.4633 18 16.945 18 17.7098V32.2902C18 33.055 18.8237 33.5367 19.4903 33.1617L32.4505 25.8716C33.1302 25.4893 33.1302 24.5107 32.4505 24.1284Z" stroke={color}/>
         </Styles.StyledSvg>
       );
 
