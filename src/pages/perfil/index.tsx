@@ -6,28 +6,27 @@ import { Masonry, ModalScreen } from '@common';
 import { useFocusEffect } from '@react-navigation/native';
 import { useMedia } from '@hooks';
 
-const Folder: React.FC = () => {
+type ItemsProps = {
+  id?:string;
+  uri?:string;
+  index:number;
+  width?:number;
+  height?:number;
+  albumId?:string;
+  duration?:number;
+  filename?:string;
+  mediaType?:string;
+  creationTime?:number;
+  modificationTime?:number;
+};
+
+const Folder = () => {
   const [media, setMedia] = React.useState<Array<object>>([]);
+  const [state, setState] = React.useState({ index:0, modal:false });
 
-  const [state, setState] = React.useState({
-    id:0,
-    url:'',
-    mediaType:'',
-    index:0,
-    creator:'',
-    modal:false,
-    downloaded: false,
-  });
+  const handleSelectItem = (item: ItemsProps) => setState({...state, index: item.index, modal: true});
 
-  const handleSelectItem = (item: any) => setState({
-    ...state,
-    ...item,
-    modal: true,
-    downloaded: null,
-    creator: `${item.id}_${item.createby}`,
-  });
-
-  const refreshAssets = () => useMedia({ folder: 'Storage', screens: 'perfil' }).then(setMedia)
+  const refreshAssets = () => useMedia({ screens: 'perfil' }).then(setMedia)
 
   useFocusEffect(React.useCallback(() => {refreshAssets()}, []));
 
@@ -37,6 +36,7 @@ const Folder: React.FC = () => {
       <ModalScreen
         data={media}
         state={state}
+        screen='local'
         onBackButtonPress={() => setState({ ...state, modal: false })}
       />
     </Styles.Container>
