@@ -8,15 +8,16 @@ type DownloadProps = {
   url: string;
   creator: string;
   mediaType: string;
-  folder: string;
 };
 
-export const useDownloads = async ({ folder, url, creator, mediaType }: DownloadProps) => {
+const NAME_FOLDER = 'Storage';
+
+export const useDownloads = async ({ url, creator, mediaType }: DownloadProps) => {
   const downloadResumable: FileSystem.DownloadResumable = FileSystem.createDownloadResumable(
     url, `${FileSystem.documentDirectory}${creator}${mediaType}`, {}, //callback
   );
 
-  const album = await MediaLibrary.getAlbumAsync(folder);
+  const album = await MediaLibrary.getAlbumAsync(NAME_FOLDER);
 
   const { uri, status }: any = await downloadResumable.downloadAsync();
   const asset = await MediaLibrary.createAssetAsync(uri);
@@ -25,7 +26,7 @@ export const useDownloads = async ({ folder, url, creator, mediaType }: Download
 
   try {
     if (album == null) {
-      await MediaLibrary.createAlbumAsync(folder, asset, false);
+      await MediaLibrary.createAlbumAsync(NAME_FOLDER, asset, false);
       return({ status: 200, response: true })
     } else {
       await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);

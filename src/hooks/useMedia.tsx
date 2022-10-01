@@ -1,17 +1,21 @@
-import * as React from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
 type Props = {
   array?: object[];
   screens: 'home' | 'perfil';
-  folder: string;
 };
 
-export const useMedia = async({ array = [], screens = 'home', folder = 'Example' }: Props) => {
+const NAME_FOLDER = 'Storage';
+
+export const useMedia = async({ array = [], screens = 'home' }: Props) => {
   const { granted } = await MediaLibrary.requestPermissionsAsync();
   if(granted) await MediaLibrary.getAlbumsAsync();
 
-  const album = await MediaLibrary.getAlbumAsync(folder);
+  const album = await MediaLibrary.getAlbumAsync(NAME_FOLDER);
+
+  if(album === null && screens === 'perfil'){
+    return [];
+  };
 
   const { assets } = await MediaLibrary.getAssetsAsync({
     mediaType: ["video", "photo"],
