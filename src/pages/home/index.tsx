@@ -8,33 +8,14 @@ import { Masonry, ModalScreen } from '@common';
 const Home: React.FC = () => {
   const { media } = useContext();
 
-  const [state, setState] = React.useState({
-    id:0,
-    url:'',
-    mediaType:'',
-    index:0,
-    screen: '',
-    creator:'',
-    modal:false,
-    downloaded:false,
-  });
-
-  const handleSelectItem = (item: any) => setState({
-    ...state,
-    ...item,
-    modal: true,
-    screen: 'data',
-    creator: `${item.id}_${item.createby}`,
-  });
+  const [state, setState] = React.useState({ index:0, modal:false });
+  
+  const handleSelectItem = (item: any) => setState({ ...state, index: item.index, modal: true });
 
   return (
     <Styles.Container>
-      <Masonry screen='data' data={media} handleSelectItem={handleSelectItem} />
-      <ModalScreen
-        data={media}
-        state={state}
-        onBackButtonPress={() => setState({ ...state, modal: false })}
-      />
+      <Masonry screen='home' data={media} handleSelectItem={handleSelectItem} />
+      <ModalScreen screen='home' data={media} state={state} onBackButtonPress={() => setState({ ...state, modal: false })} />
     </Styles.Container>
   );
 };
