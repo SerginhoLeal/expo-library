@@ -13,11 +13,7 @@ export const ContextProvider: React.FC<Props.ContextProvider> = ({children}) => 
 
   React.useEffect(() => {
     setLoading(true)
-    useMedia({
-      array:Images,
-      screens:'home',
-      folder:'Storage'
-    })
+    useMedia({ array:Images, screens:'home' })
       .then(setMedia)
       .finally(() => setLoading(false));
   }, []);
