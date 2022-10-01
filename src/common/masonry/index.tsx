@@ -4,24 +4,23 @@ import * as Styles from './styles';
 
 import { Icon } from '../svg';
 import { Empty } from '../empty';
+import { Image } from '../image';
 
 type Props = {
   data: Array<object>;
-  screen: 'data' | 'local';
+  screen: 'home' | 'local';
   handleSelectItem: ({}: any) => void;
 };
 
-const {width: WIDTH_FOR_IMAGE, height: HEIGHT_FOR_IMAGE} = Native.Dimensions.get('window');
+const { width: WIDTH_FOR_IMAGE } = Native.Dimensions.get('window');
 const width = WIDTH_FOR_IMAGE / 2.04;
 
-const Image = ({ item }: any) => {
-  const height = item.height / (item.width / width);
+export const Masonry: React.FC<Props> = ({ data, screen, handleSelectItem }: Props) => {
+  if(data.length === 0 && screen === 'home') {
+    return <Icon name='loading' color='#888' />
+  };
 
-  return <Styles.Image source={{ uri: (item.preview || item.uri)}} width={width} height={height} />
-};
-
-export const Masonry: React.FC<Props> = ({ screen, data, handleSelectItem }: Props) => {
-  if(data.length === 0) {
+  if(data.length === 0 && screen === 'local'){
     return <Empty />
   };
 
@@ -29,20 +28,16 @@ export const Masonry: React.FC<Props> = ({ screen, data, handleSelectItem }: Pro
     <Native.FlatList
       data={[data]}
       keyExtractor={(_, index) => index.toString()}
-      renderItem={({ item, index }) => (
+      renderItem={({ item }) => (
         <Styles.Content>
           <Native.View style={{ width: width }}>
             {item.filter((_: any, i: number) => Number.isInteger(i / 2)).map((item: any, ind: any) => (
-              <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
-                <Image item={item} />
-              </Native.TouchableOpacity>
+              <Image key={ind} item={item} type='masonry' onPress={() => handleSelectItem(item)} />
             ))}
           </Native.View>
           <Native.View style={{ width: width }}>
             {item.filter((_: any, i: number) => !Number.isInteger(i / 2)).map((item: any, ind: any) => (
-              <Native.TouchableOpacity activeOpacity={1} key={ind} onPress={() => handleSelectItem(item)}>
-                <Image item={item} />
-              </Native.TouchableOpacity>
+              <Image key={ind} item={item} type='masonry' onPress={() => handleSelectItem(item)} />
             ))}
           </Native.View>
         </Styles.Content>
