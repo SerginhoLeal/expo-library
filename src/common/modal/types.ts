@@ -5,18 +5,14 @@ export type OnViewableItemsChangedProps = {
   viewableItems: Native.ViewToken[];
 };
 
-type dataProps = {
-  id: number;
-  url:string;
-  mediaType:string;
+type DataProps = {
   index: number;
   modal:boolean;
-  creator:string;
-  downloaded:boolean;
 };
 
 export type StateProps = {
-  data: Array<object>;
-  state: dataProps;
+  data: Array<any>;
+  state: DataProps;
+  screen: string;
   onBackButtonPress: () => void;
 };
