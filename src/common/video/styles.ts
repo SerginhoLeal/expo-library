@@ -1,10 +1,14 @@
 import * as Native from 'react-native';
 import styled from 'styled-components/native';
 
-export const Container = styled.TouchableOpacity`
+const {width: WIDTH_FOR_IMAGE, height: HEIGHT_FOR_IMAGE} = Native.Dimensions.get('window');
+
+export const Container = styled.SafeAreaView`
   flex: 1;
   justify-content: center;
   align-items: center;
+  width: ${WIDTH_FOR_IMAGE}px;
+  height: ${HEIGHT_FOR_IMAGE}px;
 `;
 
 export const Actions = styled.View`
