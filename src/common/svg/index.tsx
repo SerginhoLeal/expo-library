@@ -3,7 +3,12 @@ import * as Native from 'react-native';
 import * as Styles from './styles';
 import { Props } from './types';
 
-export const Icon: React.FC<Props> = ({ name = 'user', size = '50', color = '#fff' }: Props) => {
+export const Icon: React.FC<Props> = ({
+  name = 'user',
+  size = '50',
+  color = '#fff',
+  weight = 2,
+}: Props) => {
   switch (name) {
     case 'home':
       return (
@@ -26,8 +31,18 @@ export const Icon: React.FC<Props> = ({ name = 'user', size = '50', color = '#ff
     case 'download':
       return (
         <Styles.StyledSvg width={size} height={size} viewBox="0 0 43 43">
-          <Styles.StyledPath d="M21.5 15V25.7426L25.9497 21.2929L26.6569 22L21.7105 26.9463L21.714 26.9497L21.0069 27.6569L21.0034 27.6534L21 27.6569L20.2929 26.9497L20.2963 26.9463L15.35 22L16.0571 21.2929L20.5 25.7358V15H21.5Z" fill={color}/>
-          <Styles.StyledPath d="M29 30V29H13V30H29Z" fill={color}/>
+          <Styles.StyledPath
+            d="M21.5 15V25.7426L25.9497 21.2929L26.6569 22L21.7105 26.9463L21.714 26.9497L21.0069 27.6569L21.0034 27.6534L21 27.6569L20.2929 26.9497L20.2963 26.9463L15.35 22L16.0571 21.2929L20.5 25.7358V15H21.5Z"
+            strokeWidth={weight - 1}
+            stroke={color}
+            fill={color}
+          />
+          <Styles.StyledPath
+            d="M29 30V29H13V30H29Z"
+            strokeWidth={weight - 1}
+            stroke={color}
+            fill={color}
+          />
         </Styles.StyledSvg>
       );
 
@@ -48,22 +63,31 @@ export const Icon: React.FC<Props> = ({ name = 'user', size = '50', color = '#ff
     case 'check':
       return (
         <Styles.StyledSvg width={size} height={size} viewBox="0 0 50 50">
-          <Styles.StyledPath d="M21.299 31.7644L21.2842 31.7792L16 26.495L17.0682 25.4269L21.2866 29.6453L32.9318 18L34 19.0682L21.3014 31.7668L21.299 31.7644Z" fill={color}/>
+          <Styles.StyledPath
+            d="M21.299 31.7644L21.2842 31.7792L16 26.495L17.0682 25.4269L21.2866 29.6453L32.9318 18L34 19.0682L21.3014 31.7668L21.299 31.7644Z"
+            strokeWidth={weight - .8}
+            stroke={color}
+            fill={color}
+          />
         </Styles.StyledSvg>
       );
 
     case 'play':
       return (
         <Styles.StyledSvg width={size} height={size} viewBox="0 0 50 50">
-          <Styles.StyledPath d="M32.4505 24.1284L19.4903 16.8383C18.8237 16.4633 18 16.945 18 17.7098V32.2902C18 33.055 18.8237 33.5367 19.4903 33.1617L32.4505 25.8716C33.1302 25.4893 33.1302 24.5107 32.4505 24.1284Z" stroke={color}/>
+          <Styles.StyledPath
+            d="M25.6504 19.1284L15.8902 13.6383C15.2236 13.2633 14.3999 13.745 14.3999 14.5098V25.4901C14.3999 26.255 15.2236 26.7367 15.8902 26.3617L25.6504 20.8716C26.3301 20.4893 26.3301 19.5107 25.6504 19.1284Z"
+            strokeWidth={weight}
+            stroke={color}
+          />
         </Styles.StyledSvg>
       );
 
     case 'pause':
       return (
         <Styles.StyledSvg width={size} height={size} viewBox="0 0 50 50">
-          <Styles.StyledPath d="M21 16H20V34H21V16Z" fill={color}/>
-          <Styles.StyledPath d="M30 16H29V34H30V16Z" fill={color}/>
+          <Styles.StyledPath strokeWidth={weight} d="M21 16H20V34H21V16Z" stroke={color} />
+          <Styles.StyledPath strokeWidth={weight} d="M30 16H29V34H30V16Z" stroke={color} />
         </Styles.StyledSvg>
       );
 
@@ -75,7 +99,18 @@ export const Icon: React.FC<Props> = ({ name = 'user', size = '50', color = '#ff
       );
 
     case 'loading':
-      return <Native.ActivityIndicator color={color} size={Number(size) - 30} />
+      return <Native.ActivityIndicator color={color} size={Number(size) - 30} />;
+
+    case 'tags':
+      return (
+        <Styles.StyledSvg width={size} height={size} viewBox="0 0 50 50">
+          <Styles.StyledPath
+            d="M16 22.7929V16.5C16 16.2239 16.2239 16 16.5 16H22.7929C22.9255 16 23.0527 16.0527 23.1464 16.1464L33.6464 26.6464C33.8417 26.8417 33.8417 27.1583 33.6464 27.3536L27.3536 33.6464C27.1583 33.8417 26.8417 33.8417 26.6464 33.6464L16.1464 23.1464C16.0527 23.0527 16 22.9255 16 22.7929Z"
+            strokeWidth={weight}
+            stroke={color}
+          />
+        </Styles.StyledSvg>
+      )
 
     default:
       break;
