@@ -3,11 +3,13 @@ import * as Native from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Icon } from '@common';
+import { RootStackParamList } from '@types';
 
 import HomeScreen from './pages/home';
-import PerfilScreen from './pages/perfil';
+import ProfileScreen from './pages/profile';
+import SliderScreen from './pages/slider';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function Router() {
   return (
@@ -31,8 +33,19 @@ export default function Router() {
         }}
       />
       <Tab.Screen
-        name="Perfil"
-        component={PerfilScreen}
+        name="Slider"
+        component={SliderScreen}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+          }
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{
           headerTitle: () => <Icon name='user' color='#888' />,
           headerTitleAlign: 'center',
