@@ -15,6 +15,7 @@ module.exports = function(api) {
             '@pages': './src/pages',
             '@common': './src/common',
             '@context': './src/context',
+            '@types': './src/types',
           }
         }
       ]

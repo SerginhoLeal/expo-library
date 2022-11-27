@@ -9,6 +9,7 @@
       "@common": ["./src/common"],
       "@pages/*": ["./src/pages/*"],
       "@context": ["./src/context"],
+      "@types": ["./src/types"]
     }
   },
 }
